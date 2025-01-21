@@ -1,0 +1,27 @@
+class RandomNumber;  
+    rand bit [3:0] a;              
+    bit [3:0] last_values[5];      
+    constraint unique_constraint {  
+        foreach (last_values[i]) {  
+            a != last_values[i];  
+        }  
+    }  
+task randomize_and_update();  
+        if (this.randomize()) begin  
+            last_values = {last_values[1:4], a};    
+        end else begin  
+            $display("Randomization failed!");  
+        end  
+    endtask  
+endclass  
+  
+module testbench;  
+    RandomNumber rand_inst;  
+    initial begin  
+        rand_inst = new;  
+    for (int i = 0; i < 10; i++) begin  
+            rand_inst.randomize_and_update();  
+            $display("Randomized value: %0d", rand_inst.a);  
+        end  
+    end  
+endmodule 
